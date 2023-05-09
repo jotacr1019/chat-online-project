@@ -15,7 +15,7 @@
         "build:front": "parcel build ./src/index.html",
         "nodemon": "nodemon --watch 'index.ts' --exec 'ts-node .index.ts'",
         "dev": "concurrently --kill-others \"npm run nodemon\" \"npm run parcel\"",
-        "build:api": "tsc ./server/index.ts",
+        "build:api": "tsc index.ts",
         "build": "npm run build:front && npm run build:api",
         "start": "node index.js"
     },
