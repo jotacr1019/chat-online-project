@@ -5,6 +5,8 @@ import { firestore, rtdb } from "./db"
 import { v4 as uuidv4 } from 'uuid';           
 import { state } from "./src/state"
 const express = require('express')
+import * as dotenv from 'dotenv';
+dotenv.config()
 let myApp = express()
 let router = express.Router()
 let cors = require('cors')    

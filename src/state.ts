@@ -1,7 +1,9 @@
-const API_BASE_URL = 'http://localhost:10000'
 import { getDatabase, ref, onValue, set } from "firebase/database"
 import { rtdbFirebase } from "./rtdb"
+import * as dotenv from 'dotenv';
+dotenv.config()
 import map from "lodash/map"
+const API_BASE_URL = process.env.API_BASE_URL
 
 type Message = {
     user: string,
