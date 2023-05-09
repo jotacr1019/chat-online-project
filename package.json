@@ -1,0 +1,42 @@
+{
+    "name": "chat-online",
+    "version": "1.0.0",
+    "repository": "",
+    "description": "Proyecto- chat online",
+    "keywords": [],
+    "author": "José J. Fernández",
+    "license": "ISC",
+    "resolutions": {
+        "parcel-bundler": "^2.0.0 || ^1.12.5"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "parcel": "parcel serve ./src/index.html",
+        "build:front": "parcel build ./src/index.html",
+        "nodemon": "nodemon --watch 'index.ts' --exec 'ts-node .index.ts'",
+        "dev": "concurrently --kill-others \"npm run nodemon\" \"npm run parcel\"",
+        "build:api": "tsc ./server/index.ts",
+        "build": "npm run build:front && npm run build:api",
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "@types/node": "^18.15.2",
+        "@vaadin/router": "^1.7.4",
+        "body-parser": "^1.20.2",
+        "cors": "^2.8.5",
+        "dotenv": "^16.0.3",
+        "express": "^4.18.2",
+        "firebase": "^9.17.1",
+        "firebase-admin": "^11.5.0",
+        "lodash": "^4.17.21",
+        "nanoid": "^4.0.1",
+        "nodemon": "^2.0.20",
+        "parcel": "^2.8.3",
+        "typescript": "^4.9.5",
+        "uuid": "^9.0.0"
+    },
+    "devDependencies": {
+        "concurrently": "^7.6.0",
+        "process": "^0.11.10"
+    }
+}
