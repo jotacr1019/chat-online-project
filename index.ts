@@ -17,7 +17,7 @@ myApp.use(bodyParser.json())
 myApp.use(cors())   
 // myApp.use(express.static('dist'))
 
-let port = process.env.PORT || 10000 
+let port = process.env.PORT || 9090
 const userCollection = firestore.collection("users"); 
 const roomsCollection = firestore.collection("rooms")
 

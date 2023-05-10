@@ -4,6 +4,8 @@ import * as dotenv from 'dotenv';
 dotenv.config()
 import map from "lodash/map"
 const API_BASE_URL = process.env.API_BASE_URL
+// const API_BASE_URL = 'http://localhost:10000'
+
 
 type Message = {
     user: string,
