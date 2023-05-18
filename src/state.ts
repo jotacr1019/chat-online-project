@@ -151,6 +151,9 @@ const state = {
         const timestamp = Date.now();
         const date = new Date(timestamp);
         const normalDate = date.toLocaleString();
+        const finalHour = formatTime(normalDate);
+        console.log(finalHour);
+        
         fetch(API_BASE_URL + "/api/messages", {
             method: "post",
             headers: {
@@ -160,10 +163,27 @@ const state = {
                 user: this.data.user,
                 roomId: this.data.roomId,
                 longId: this.data.longRoomId,
-                message: {message: message, date: normalDate}
+                message: {message: message, date: finalHour}
             })
         })
     },
 }
 
 export { state }
+
+
+function formatTime(time) {
+    console.log(time);
+    
+    const timestampParts = time.split(" ");
+    const datePart = timestampParts[0];
+    const timePart = timestampParts[1];
+    console.log(timePart);
+
+    const [hours, minutes, seconds] = timePart.split(':');
+    const formattedHours = (parseInt(hours) % 12) || 12;
+    const amPm = parseInt(hours) < 12 ? 'AM' : 'PM';
+  
+    const formattedTime = `${formattedHours}:${minutes}${amPm}`;
+    return `${datePart}, ${formattedTime}`;
+  }
