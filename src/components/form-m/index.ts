@@ -1,6 +1,7 @@
 import { state } from "../../state";
 import "../text/index";
 
+
 export class Form extends HTMLElement {
     shadowDom = this.attachShadow({mode: "open"});
     constructor(){
@@ -59,15 +60,7 @@ export class Form extends HTMLElement {
             e.preventDefault();
             const f = e.target as any;
             const value = f.text.value;
-            // console.log(value);
-            // if (value !== ""){
             state.setMessage(value);
-            // state.setState({
-            //     ...state.getState(),
-            //     messages: value 
-            // })
-                // };
-            console.log(state.getState());
             f.text.value = ""
         })
     };

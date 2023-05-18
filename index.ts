@@ -1,12 +1,11 @@
 import { json, response } from "express"
 import { firestore, rtdb } from "./db"
-// import { getDatabase, ref, onValue, set } from "firebase-admin/database"
-// import { nanoid } from 'nanoid'  
-import { v4 as uuidv4 } from 'uuid';           
-import { state } from "./src/state"
+import { v4 as uuidv4 } from 'uuid';
 const express = require('express')
 import * as dotenv from 'dotenv';
 dotenv.config()
+
+
 let myApp = express()
 let router = express.Router()
 let cors = require('cors')    
@@ -14,15 +13,12 @@ let bodyParser = require('body-parser')
 
 myApp.use(bodyParser.urlencoded({ extended: true }))
 myApp.use(bodyParser.json())
-myApp.use(cors())   
-// myApp.use(express.static('dist'))
+myApp.use(cors())
 
 let port = process.env.PORT || 9090
+
 const userCollection = firestore.collection("users"); 
 const roomsCollection = firestore.collection("rooms")
-
-console.log(process.env.ENVIRONMENT);
-
 
 // signup
 
@@ -37,13 +33,9 @@ router.post('/signup', function(req,res){
             }).then((newUserRef)=>{
                 res.json({
                     id: newUserRef.id
-                    // new: true
                 })
             });
         } else {
-            // res.json({
-            //     id: response.docs[0].id
-            // })
             res.status(400).json({
                 message: "User already exists"
             })
@@ -51,23 +43,18 @@ router.post('/signup', function(req,res){
     })
 })
 
-
 // auth
 
 router.post("/auth", function(req,res){
     const {email, name} = req.body;
     userCollection.where('email','==',email).get().then((response)=>{
         if (response.empty){
-            // res.status(404).json({
-            //     message: "User not found"
-            // })
             userCollection.add({
                 email: email,
                 name: name
             }).then((newUserRef)=>{
                 res.json({
                     id: newUserRef.id
-                    // new: true
                 })
             });
         } else {
@@ -78,7 +65,6 @@ router.post("/auth", function(req,res){
     })
 })
 
-// endpoints en PLURAL siempre!!!!
 // create room
 
 router.post("/rooms", function(req,res){
@@ -119,7 +105,6 @@ router.get("/rooms/:roomId", function(req,res){
             roomsCollection.doc(roomId).get().then((snap)=>{
                 const data = snap.data()
                 res.json(data)
-                // console.log(res.json(data));
             })
         } else {
             res.status(401).json({
@@ -131,8 +116,11 @@ router.get("/rooms/:roomId", function(req,res){
 
 router.post('/messages', function(req,res){
     const chatRoomsRef = rtdb.ref(`/rooms/${req.body.longId}/messages`)
-    console.log(req.body);
-    chatRoomsRef.push(req.body, function(){
+    chatRoomsRef.push({
+        message: req.body.message,
+        user: req.body.user,
+        roomId: req.body.roomId,
+    }, function(){
         res.json("Prueba completada")
     })
 })

@@ -1,17 +1,15 @@
 import { getDatabase, ref, onValue, set } from "firebase/database"
 import { rtdbFirebase } from "./rtdb"
+import map from "lodash/map"
 import * as dotenv from 'dotenv';
 dotenv.config()
-import map from "lodash/map"
 const API_BASE_URL = process.env.API_BASE_URL
 
-// const API_BASE_URL = 'http://localhost:10000'
 
-
-type Message = {
-    user: string,
-    messaje: string
-}
+// type Message = {
+//     user: string,
+//     messaje: string
+// }
 
 const state = {
     data: {
@@ -20,33 +18,8 @@ const state = {
         messages: [],
         roomId: "",
         longRoomId: "",
-        userId: ""
+        userId: "",
     },
-    // data: {
-    //     chats: {
-    //         chatRoomId: {
-    //             userId: "",
-    //             lastMessage: ""
-    //         },
-    //         chatroom2:{}
-    //     },
-    //     users: {
-    //         chatId: {
-    //             userX: true
-    //         }
-    //     },
-    //     messages:{
-    //         chatId: {
-    //             m1:{
-    //                 userId: "",
-    //                 message: ""
-    //             },
-    //             m2: {},
-    //             m3: {}
-    //         },
-    //         chatroom2: {}
-    //     }
-    // },
 
     listeners: [],
 
@@ -54,51 +27,42 @@ const state = {
         return this.data;
     },
 
-    init(){
+    listenToDatabase(){
     const currentState = this.getState()
-    console.log('soy init()', currentState);
     const chatReference = ref(rtdbFirebase, `/rooms/${currentState.longRoomId}/messages`)
-    // console.log(chatReference);
+
     onValue(chatReference, (snapShot)=>{  
         const messagesFromServer = snapShot.val()
-        // console.log(messagesFromServer);
         const messagesList = map(messagesFromServer)
         currentState.messages = messagesList;
-        // console.log(messagesList);
         this.setState(currentState);
-        console.log('soy init() al final',currentState);
         })
     },
 
     setState(newState){
         this.data = newState;
-        // console.log('soy setState:');
-        console.log('soy setState',state.getState());
-        
         for (const cb of this.listeners){
             cb();
-            // this.listeners = [];
         }
-        // localStorage.setItem("saved-game", JSON.stringify(newState));
     },
 
     subscribe(callBack: (any)=>any){
         this.listeners.push(callBack);
     },
 
-    setUser(user: string, email: string){
+    setUser(user: string, email: string, cb?: Function){
         const currentState = this.getState();
         currentState.user = user;
         currentState.email = email;
         this.setState(currentState);
-        // console.log('setState: ', currentState);
-        // this.createUserInDB()
+        cb()
     },
 
-    setRoomId(roomId){
-        const currentState = this.getState;
+    setRoomId(roomId, cb?: Function){
+        const currentState = this.getState();
         currentState.roomId = roomId;
         this.setState(currentState)
+        cb()
     },
 
     authUser(cb){
@@ -121,107 +85,85 @@ const state = {
         })
     },
 
-    async createUserInDB(cb){
-        const currentState = this.getState();
-        const response = await fetch(API_BASE_URL + '/api/signup', {
-            method: 'POST',
-            headers: {
-                "content-type": "application/json"
-            },
-            body: JSON.stringify({
-                email: this.data.email,
-                name: this.data.user
+    async createUserInDB(cb?: Function){
+        try {
+            const currentState = this.getState();
+            const response = await fetch(API_BASE_URL + '/api/signup', {
+                method: 'POST',
+                headers: {
+                    "content-type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: this.data.email,
+                    name: this.data.user
+                })
             })
-        })
-        const resp = await response.json()
-        // this.createRoom(resp.id)
-        currentState.userId = resp.id;
-        this.setState(currentState);
-        cb()
-        // console.log('createUser: ', currentState);
+            const resp = await response.json()
+            currentState.userId = resp.id;
+            this.setState(currentState);
+            cb()
+        } catch (error) {
+            console.error(error);
+        }
     },
 
-    createRoom(){
-        const currentState = this.getState()
-        // console.log(currentState);
-        fetch(API_BASE_URL + '/api/rooms', {
-            method: 'POST',
-            headers: {
-                "content-type": "application/json"
-            },
-            body: JSON.stringify({
+    async createRoom() {
+        try {
+            const currentState = this.getState();
+            const res = await fetch(API_BASE_URL + '/api/rooms', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
                 userId: currentState.userId
-            })
-        }).then((res)=>{
-            return res.json()
-        }).then((data)=>{
+                })
+            });
+
+            const data = await res.json();
             console.log(data);
-            // const currentState = this.getState();
+
             currentState.roomId = data.id;
             currentState.longRoomId = data.longId;
             this.setState(currentState);
             console.log(currentState);
-            this.init()
-        })
+
+            this.listenToDatabase();
+        } catch (error) {
+            console.error(error);
+        }
     },
 
     getRoom(){
         const currentState = this.getState()
-        // console.log(currentState);
         fetch(API_BASE_URL + "/api/rooms/" + currentState.roomId + "?userId=" + currentState.userId, {
             method: 'GET',
         }).then((res)=>{
             return res.json()
         }).then((data)=>{
-            // console.log(data);
             currentState.longRoomId = data.rtdbRoomId
             this.setState(currentState)
-            this.init()
+            this.listenToDatabase()
         })
     },
     
-    setMessage(message: string){     // lo unico que hace es mandarle al backend el msj
-        // console.log('soy setMessage:', message);
-        // const currentState = this.getState();
-        // currentState.messages.push(message);
-        // this.setState(currentState);
-        fetch(API_BASE_URL + "/api/messages", {    // nuevo, el bkend lo va a guardar en bdrt
+    setMessage(message: string){
+        const timestamp = Date.now();
+        const date = new Date(timestamp);
+        const normalDate = date.toLocaleString();
+        fetch(API_BASE_URL + "/api/messages", {
             method: "post",
             headers: {
                 "content-type": "application/json"
             },
             body: JSON.stringify({
                 user: this.data.user,
+                roomId: this.data.roomId,
                 longId: this.data.longRoomId,
-                message: message
+                message: {message: message, date: normalDate}
             })
         })
     },
-
-    // deleteMessage(id){
-    //     fetch(API_BASE_URL + '/api/messages/' + id, {
-    //         method: 'delete',
-    //         headers: {
-    //             "content-type": "application/json"
-    //         },
-    //         body : JSON.stringify({
-    //             id: id
-    //         })
-    //     })
-    // }
 }
-    // initOfHistory(){
-    //     const dataOfHistory: any = localStorage.getItem("saved-game");  //db??
-    //     if(dataOfHistory !== null){
-    //         this.setState(JSON.parse(dataOfHistory))
-    //     }   
-    // },
-
-    // pushToHistory(game){   // pushToDb????
-    //     const currentState = this.getState();
-    //     currentState.history.push(game);
-    //     this.setState(currentState);
-    // },
-
 
 export { state }

@@ -11,13 +11,6 @@ export class Header extends HTMLElement {
         div.style.backgroundColor = '#FF8282'
         div.style.width = '100%'
         div.style.height = '56px'
-        // style.innerHTML = `
-        //         width: 100%;
-        //         height: 60px;
-        //         background-color: #FF8282;
-        // `
-
-        // shadowDom.appendChild(style);
         shadowDom.appendChild(div);
     };
 }
