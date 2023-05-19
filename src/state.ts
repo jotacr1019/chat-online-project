@@ -149,7 +149,7 @@ const state = {
         const normalDate = date.toLocaleString();
         // const finalHour = normalDate;
         const finalHour = formatTime(normalDate);
-        // const finalHour = formatTime("5/18/2023, 7:30:46 PM");
+        // const finalHour = formatTime("18/5/2023, 21:06:00");
         console.log(finalHour);
         
         fetch(API_BASE_URL + "/api/messages", {
@@ -179,7 +179,7 @@ function formatTime(time) {
     const timePart = timestampParts[1];
     const amPm = timestampParts[2];
     console.log(amPm);
-    if(amPm.includes("AM")){
+    if(amPm && amPm.includes("AM")){
         const [hours, minutes, seconds] = timePart.split(':');
         
         const formattedTime = `${hours}:${minutes}AM`;
@@ -187,7 +187,7 @@ function formatTime(time) {
         console.log('hace tratamiento de AM');
         return `${datePart}, ${formattedTime}`;
     }
-    if(amPm.includes("PM")){
+    if(amPm && amPm.includes("PM")){
         const [hours, minutes, seconds] = timePart.split(':');
         console.log(hours);
         const formattedTime = `${hours}:${minutes}PM`;
