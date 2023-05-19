@@ -182,7 +182,7 @@ function formatTime(time) {
     if(amPm && amPm.includes("AM")){
         const [hours, minutes, seconds] = timePart.split(':');
         
-        const formattedTime = `${hours}:${minutes}AM`;
+        const formattedTime = `${hours}:${minutes} AM`;
         // const formattedTime = `${hours}:${minutes}${amPm}`;  ????
         console.log('hace tratamiento de AM');
         return `${datePart}, ${formattedTime}`;
@@ -190,10 +190,10 @@ function formatTime(time) {
     if(amPm && amPm.includes("PM")){
         const [hours, minutes, seconds] = timePart.split(':');
         console.log(hours);
-        const formattedTime = `${hours}:${minutes}PM`;
+        const formattedTime = `${hours}:${minutes} PM`;
         console.log(formattedTime);
         console.log('hace tratamiento de PM');
-        return `${datePart}, ${formattedTime}`;
+        return `${datePart} ${formattedTime}`;
     }
     else {
         console.log('hace tratamiento total');
@@ -201,7 +201,7 @@ function formatTime(time) {
         const formattedHours = (parseInt(hours) % 12) || 12;
         const amPm = parseInt(hours) < 12 ? 'AM' : 'PM';
     
-        const formattedTime = `${formattedHours}:${minutes}${amPm}`;
+        const formattedTime = `${formattedHours}:${minutes} ${amPm}`;
         return `${datePart}, ${formattedTime}`;
     }
 }
