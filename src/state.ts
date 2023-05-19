@@ -148,7 +148,7 @@ const state = {
         const date = new Date(timestamp);
         const normalDate = date.toLocaleString();
         // const finalHour = formatTime(normalDate);
-        const finalHour = formatTime("18/5/2023, 5:57PM");
+        const finalHour = formatTime(normalDate);
         // console.log(finalHour);
         
         fetch(API_BASE_URL + "/api/messages", {
