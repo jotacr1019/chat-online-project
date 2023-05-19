@@ -152,7 +152,7 @@ const state = {
         const date = new Date(timestamp);
         const normalDate = date.toLocaleString();
         const finalHour = formatTime(normalDate);
-        console.log(finalHour);
+        // console.log(finalHour);
         
         fetch(API_BASE_URL + "/api/messages", {
             method: "post",
@@ -179,11 +179,15 @@ function formatTime(time) {
     const datePart = timestampParts[0];
     const timePart = timestampParts[1];
     console.log(timePart);
+    if(timePart.includes("AM") && timePart.includes("PM")){
+        return time;
+    } else {
+        const [hours, minutes, seconds] = timePart.split(':');
+        const formattedHours = (parseInt(hours) % 12) || 12;
+        const amPm = parseInt(hours) < 12 ? 'AM' : 'PM';
+    
+        const formattedTime = `${formattedHours}:${minutes}${amPm}`;
+        return `${datePart}, ${formattedTime}`;
+    }
 
-    const [hours, minutes, seconds] = timePart.split(':');
-    const formattedHours = (parseInt(hours) % 12) || 12;
-    const amPm = parseInt(hours) < 12 ? 'AM' : 'PM';
-  
-    const formattedTime = `${formattedHours}:${minutes}${amPm}`;
-    return `${datePart}, ${formattedTime}`;
   }
