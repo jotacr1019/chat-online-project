@@ -185,7 +185,7 @@ function formatTime(time) {
         const formattedTime = `${hours}:${minutes} AM`;
         // const formattedTime = `${hours}:${minutes}${amPm}`;  ????
         console.log('hace tratamiento de AM');
-        return `${datePart}, ${formattedTime}`;
+        return `${datePart} ${formattedTime}`;
     }
     if(amPm && amPm.includes("PM")){
         const [hours, minutes, seconds] = timePart.split(':');
@@ -202,6 +202,6 @@ function formatTime(time) {
         const amPm = parseInt(hours) < 12 ? 'AM' : 'PM';
     
         const formattedTime = `${formattedHours}:${minutes} ${amPm}`;
-        return `${datePart}, ${formattedTime}`;
+        return `${datePart} ${formattedTime}`;
     }
 }
