@@ -55,7 +55,8 @@ class Chat extends HTMLElement {
                 contentDiv.className = 'msjs-1';
                 contentDiv.textContent = msj.message.message;
                 contentHour.className = 'span-hour-1';
-                contentHour.textContent = msj.message.date.split(' ')[1].slice(0, 6);
+                // contentHour.textContent = msj.message.date.split(' ')[1].slice(0, 6);
+                contentHour.textContent = msj.message.date;
             } else {
                 messageDiv.className = 'div-uni-2';
                 userSpan.className = 'span-2';
@@ -63,7 +64,8 @@ class Chat extends HTMLElement {
                 contentDiv.className = 'msjs-2';
                 contentDiv.textContent = msj.message.message;
                 contentHour.className = 'span-hour-2';
-                contentHour.textContent = msj.message.date.split(' ')[1].slice(0, 6);
+                // contentHour.textContent = msj.message.date.split(' ')[1].slice(0, 6);
+                contentHour.textContent = msj.message.date;
             }
 
             messageDiv.appendChild(userSpan);
