@@ -147,8 +147,8 @@ const state = {
         const timestamp = Date.now();
         const date = new Date(timestamp);
         const normalDate = date.toLocaleString();
+        const finalHour = normalDate;
         // const finalHour = formatTime(normalDate);
-        const finalHour = formatTime(normalDate);
         // console.log(finalHour);
         
         fetch(API_BASE_URL + "/api/messages", {
