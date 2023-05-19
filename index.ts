@@ -1,15 +1,17 @@
 import { json, response } from "express"
+// const express = require('express')
 import { firestore, rtdb } from "./db"
 import { v4 as uuidv4 } from 'uuid';
-const express = require('express')
+import * as path from 'path';  
+import * as express from 'express';
 import * as dotenv from 'dotenv';
 dotenv.config()
 
 
-let myApp = express()
-let router = express.Router()
-let cors = require('cors')    
 let bodyParser = require('body-parser') 
+let cors = require('cors')    
+let myApp = express()
+// let router = express.Router()
 
 myApp.use(bodyParser.urlencoded({ extended: true }))
 myApp.use(bodyParser.json())
@@ -22,7 +24,7 @@ const roomsCollection = firestore.collection("rooms")
 
 // signup
 
-router.post('/signup', function(req,res){
+myApp.post('/signup', function(req,res){
     const email = req.body.email;
     const name = req.body.name;
     userCollection.where('email','==',email).get().then((response)=>{
@@ -45,7 +47,7 @@ router.post('/signup', function(req,res){
 
 // auth
 
-router.post("/auth", function(req,res){
+myApp.post("/auth", function(req,res){
     const {email, name} = req.body;
     userCollection.where('email','==',email).get().then((response)=>{
         if (response.empty){
@@ -67,7 +69,7 @@ router.post("/auth", function(req,res){
 
 // create room
 
-router.post("/rooms", function(req,res){
+myApp.post("/rooms", function(req,res){
     const {userId} = req.body;
     userCollection.doc(userId.toString()).get().then((doc)=>{
         if(doc.exists){
@@ -97,7 +99,7 @@ router.post("/rooms", function(req,res){
 
 // get room
 
-router.get("/rooms/:roomId", function(req,res){
+myApp.get("/rooms/:roomId", function(req,res){
     const {userId} = req.query;
     const {roomId} = req.params;
     userCollection.doc(userId.toString()).get().then((doc)=>{
@@ -114,7 +116,7 @@ router.get("/rooms/:roomId", function(req,res){
     })
 })
 
-router.post('/messages', function(req,res){
+myApp.post('/messages', function(req,res){
     const chatRoomsRef = rtdb.ref(`/rooms/${req.body.longId}/messages`)
     chatRoomsRef.push({
         message: req.body.message,
@@ -125,12 +127,17 @@ router.post('/messages', function(req,res){
     })
 })
 
-router.get('*', (req,res)=>{
-    res.sendFile(__dirname + '/dist/index.html')
+myApp.use(express.static('dist'))
+
+myApp.get("*", (req,res)=>{
+	res.sendFile(path.join(__dirname, "dist/index.html"));
 })
 
-myApp.use('/api', router)
-myApp.use(express.static('dist'))
+// myApp.get('*', (req,res)=>{
+//     res.sendFile(__dirname + '/dist/index.html')
+// })
+// myApp.use('/api', router)
+// myApp.use(express.static('dist'))
 
 
 myApp.listen(port)

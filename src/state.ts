@@ -62,7 +62,7 @@ const state = {
 
     authUser(cb?: Function){
         const currentState = this.getState()
-        fetch(API_BASE_URL + '/api/auth', {
+        fetch(API_BASE_URL + '/auth', {
             method: 'POST',
             headers: {
                 "content-type": "application/json"
@@ -83,7 +83,7 @@ const state = {
     async createUserInDB(cb?: Function){
         try {
             const currentState = this.getState();
-            const response = await fetch(API_BASE_URL + '/api/signup', {
+            const response = await fetch(API_BASE_URL + '/signup', {
                 method: 'POST',
                 headers: {
                     "content-type": "application/json"
@@ -105,7 +105,7 @@ const state = {
     async createRoom() {
         try {
             const currentState = this.getState();
-            const res = await fetch(API_BASE_URL + '/api/rooms', {
+            const res = await fetch(API_BASE_URL + '/rooms', {
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json'
@@ -131,7 +131,7 @@ const state = {
 
     getRoom(cb?: Function){
         const currentState = this.getState()
-        fetch(API_BASE_URL + "/api/rooms/" + currentState.roomId + "?userId=" + currentState.userId, {
+        fetch(API_BASE_URL + "/rooms/" + currentState.roomId + "?userId=" + currentState.userId, {
             method: 'GET',
         }).then((res)=>{
             return res.json()
@@ -152,7 +152,7 @@ const state = {
         // const finalHour = formatTime("19/5/2023, 18:59:24");
         console.log(finalHour);
         
-        fetch(API_BASE_URL + "/api/messages", {
+        fetch(API_BASE_URL + "/messages", {
             method: "post",
             headers: {
                 "content-type": "application/json"
