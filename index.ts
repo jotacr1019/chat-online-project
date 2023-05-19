@@ -37,7 +37,7 @@ router.post('/signup', function(req,res){
             });
         } else {
             res.status(400).json({
-                message: "User already exists"
+                message: "Email already exists"
             })
         }
     })
@@ -121,7 +121,7 @@ router.post('/messages', function(req,res){
         user: req.body.user,
         roomId: req.body.roomId,
     }, function(){
-        res.json("Prueba completada")
+        res.json("Message sent successfully")
     })
 })
 

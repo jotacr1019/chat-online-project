@@ -65,8 +65,9 @@ export function initWelcome (params){
                 const capitalizedName = capitalizeFirstTwoWords(value.name)
                 state.setUser(capitalizedName, value.email, ()=>{
                     state.authUser(()=>{
-                        state.getRoom()
-                        params.goTo("/chat")
+                        state.getRoom(()=>{
+                            params.goTo("/chat")
+                        })
                     })
                 })
             })

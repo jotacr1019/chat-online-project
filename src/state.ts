@@ -24,14 +24,13 @@ const state = {
     },
 
     listenToDatabase(){
-    const currentState = this.getState()
-    const chatReference = ref(rtdbFirebase, `/rooms/${currentState.longRoomId}/messages`)
-
-    onValue(chatReference, (snapShot)=>{  
-        const messagesFromServer = snapShot.val()
-        const messagesList = map(messagesFromServer)
-        currentState.messages = messagesList;
-        this.setState(currentState);
+        const currentState = this.getState()
+        const chatReference = ref(rtdbFirebase, `/rooms/${currentState.longRoomId}/messages`)
+        onValue(chatReference, (snapShot)=>{  
+            const messagesFromServer = snapShot.val()
+            const messagesList = map(messagesFromServer)
+            currentState.messages = messagesList;
+            this.setState(currentState);
         })
     },
 
@@ -61,7 +60,7 @@ const state = {
         cb()
     },
 
-    authUser(cb){
+    authUser(cb?: Function){
         const currentState = this.getState()
         fetch(API_BASE_URL + '/api/auth', {
             method: 'POST',
@@ -130,7 +129,7 @@ const state = {
         }
     },
 
-    getRoom(){
+    getRoom(cb?: Function){
         const currentState = this.getState()
         fetch(API_BASE_URL + "/api/rooms/" + currentState.roomId + "?userId=" + currentState.userId, {
             method: 'GET',
@@ -140,6 +139,7 @@ const state = {
             currentState.longRoomId = data.rtdbRoomId
             this.setState(currentState)
             this.listenToDatabase()
+            cb()
         })
     },
     
@@ -149,7 +149,7 @@ const state = {
         const normalDate = date.toLocaleString();
         // const finalHour = normalDate;
         const finalHour = formatTime(normalDate);
-        // const finalHour = formatTime("18/5/2023, 21:06:00");
+        // const finalHour = formatTime("19/5/2023, 18:59:24");
         console.log(finalHour);
         
         fetch(API_BASE_URL + "/api/messages", {
@@ -170,31 +170,36 @@ const state = {
 export { state }
 
 
-function formatTime(time) {
-    console.log(time);
+function formatTime(date) {
+    console.log(date);
     
-    const timestampParts = time.split(" ");
+    const timestampParts = date.split(" ");
     const datePart = timestampParts[0];
     // const timePart = timestampParts[1].replace(/\s/g, "");
     const timePart = timestampParts[1];
     const amPm = timestampParts[2];
     console.log(amPm);
-    if(amPm && amPm.includes("AM")){
+    if(amPm && (amPm.includes("AM") || amPm.includes("PM"))){
         const [hours, minutes, seconds] = timePart.split(':');
         
-        const formattedTime = `${hours}:${minutes} AM`;
-        // const formattedTime = `${hours}:${minutes}${amPm}`;  ????
-        console.log('hace tratamiento de AM');
-        return `${datePart} ${formattedTime}`;
+        // const formattedTime = `${hours}:${minutes} AM`;
+        const formattedTime = `${hours}:${minutes} ${amPm}`;
+        console.log('hace tratamiento de AM-PM');
+        if(!date.includes(",")) {
+            return `${datePart}, ${formattedTime}`;
+        }
+        else {
+            return `${datePart} ${formattedTime}`;
+        }
     }
-    if(amPm && amPm.includes("PM")){
-        const [hours, minutes, seconds] = timePart.split(':');
-        console.log(hours);
-        const formattedTime = `${hours}:${minutes} PM`;
-        console.log(formattedTime);
-        console.log('hace tratamiento de PM');
-        return `${datePart} ${formattedTime}`;
-    }
+    // if(amPm && amPm.includes("PM")){
+    //     const [hours, minutes, seconds] = timePart.split(':');
+    //     console.log(hours);
+    //     const formattedTime = `${hours}:${minutes} PM`;
+    //     console.log(formattedTime);
+    //     console.log('hace tratamiento de PM');
+    //     return `${datePart} ${formattedTime}`;
+    // }
     else {
         console.log('hace tratamiento total');
         const [hours, minutes, seconds] = timePart.split(':');
@@ -202,6 +207,12 @@ function formatTime(time) {
         const amPm = parseInt(hours) < 12 ? 'AM' : 'PM';
     
         const formattedTime = `${formattedHours}:${minutes} ${amPm}`;
-        return `${datePart} ${formattedTime}`;
+        if(!date.includes(",")) {
+            return `${datePart}, ${formattedTime}`;
+        }
+        else {
+            return `${datePart} ${formattedTime}`;
+        }
+        // return `${datePart} ${formattedTime}`;
     }
 }
