@@ -147,9 +147,10 @@ const state = {
         const timestamp = Date.now();
         const date = new Date(timestamp);
         const normalDate = date.toLocaleString();
-        const finalHour = normalDate;
-        // const finalHour = formatTime(normalDate);
-        // console.log(finalHour);
+        // const finalHour = normalDate;
+        const finalHour = formatTime(normalDate);
+        // const finalHour = formatTime("5/18/2023, 7:30:46 PM");
+        console.log(finalHour);
         
         fetch(API_BASE_URL + "/api/messages", {
             method: "post",
@@ -174,13 +175,28 @@ function formatTime(time) {
     
     const timestampParts = time.split(" ");
     const datePart = timestampParts[0];
+    // const timePart = timestampParts[1].replace(/\s/g, "");
     const timePart = timestampParts[1];
-    console.log(timePart);
-    if(timePart.includes("AM") || timePart.includes("PM")){
-        console.log('NO hace tratamiento');
-        return time;
-    } else {
-        console.log('hace tratamiento');
+    const amPm = timestampParts[2];
+    console.log(amPm);
+    if(amPm.includes("AM")){
+        const [hours, minutes, seconds] = timePart.split(':');
+        
+        const formattedTime = `${hours}:${minutes}AM`;
+        // const formattedTime = `${hours}:${minutes}${amPm}`;  ????
+        console.log('hace tratamiento de AM');
+        return `${datePart}, ${formattedTime}`;
+    }
+    if(amPm.includes("PM")){
+        const [hours, minutes, seconds] = timePart.split(':');
+        console.log(hours);
+        const formattedTime = `${hours}:${minutes}PM`;
+        console.log(formattedTime);
+        console.log('hace tratamiento de PM');
+        return `${datePart}, ${formattedTime}`;
+    }
+    else {
+        console.log('hace tratamiento total');
         const [hours, minutes, seconds] = timePart.split(':');
         const formattedHours = (parseInt(hours) % 12) || 12;
         const amPm = parseInt(hours) < 12 ? 'AM' : 'PM';
@@ -188,5 +204,4 @@ function formatTime(time) {
         const formattedTime = `${formattedHours}:${minutes}${amPm}`;
         return `${datePart}, ${formattedTime}`;
     }
-
-  }
+}
