@@ -1,9 +1,11 @@
+import * as dotenv from 'dotenv';
+dotenv.config()
 const admin = require("firebase-admin");
 const serviceAccount = require('./key.json')
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://cap3-mod6-apx-default-rtdb.firebaseio.com"
+    databaseURL: process.env.FIREBASE_DB_URL
 });
 
 

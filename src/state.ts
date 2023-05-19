@@ -3,13 +3,9 @@ import { rtdbFirebase } from "./rtdb"
 import map from "lodash/map"
 import * as dotenv from 'dotenv';
 dotenv.config()
+
+
 const API_BASE_URL = process.env.API_BASE_URL
-
-
-// type Message = {
-//     user: string,
-//     messaje: string
-// }
 
 const state = {
     data: {
