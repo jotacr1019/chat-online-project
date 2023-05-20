@@ -1,6 +1,7 @@
 import { initWelcome } from "../src/pages/welcome/index";
 import { initChat } from "../src/pages/chat/index";
 
+
 const BASE_PATH = "chat-online-project";
 
 function isGithubPages() {

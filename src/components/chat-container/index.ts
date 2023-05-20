@@ -47,7 +47,6 @@ class Chat extends HTMLElement {
             const userSpan = document.createElement('span');
             const contentDiv = document.createElement('div');
             const contentHour = document.createElement('span');
-            console.log(msj.message.date);
             
             if (currentState.user === msj.user) {
                 messageDiv.className = 'div-uni-1';

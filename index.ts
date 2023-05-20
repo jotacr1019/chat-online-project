@@ -1,5 +1,3 @@
-import { json, response } from "express"
-// const express = require('express')
 import { firestore, rtdb } from "./db"
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';  
@@ -11,7 +9,6 @@ dotenv.config()
 let bodyParser = require('body-parser') 
 let cors = require('cors')    
 let myApp = express()
-// let router = express.Router()
 
 myApp.use(bodyParser.urlencoded({ extended: true }))
 myApp.use(bodyParser.json())
@@ -25,8 +22,7 @@ const roomsCollection = firestore.collection("rooms")
 // signup
 
 myApp.post('/signup', function(req,res){
-    const email = req.body.email;
-    const name = req.body.name;
+    const {email, name} = req.body;
     userCollection.where('email','==',email).get().then((response)=>{
         if (response.empty){
             userCollection.add({
@@ -116,6 +112,8 @@ myApp.get("/rooms/:roomId", function(req,res){
     })
 })
 
+// send message
+
 myApp.post('/messages', function(req,res){
     const chatRoomsRef = rtdb.ref(`/rooms/${req.body.longId}/messages`)
     chatRoomsRef.push({
@@ -128,17 +126,9 @@ myApp.post('/messages', function(req,res){
 })
 
 myApp.use(express.static('dist'))
-
 myApp.get("*", (req,res)=>{
 	res.sendFile(path.join(__dirname, "dist/index.html"));
 })
-
-// myApp.get('*', (req,res)=>{
-//     res.sendFile(__dirname + '/dist/index.html')
-// })
-// myApp.use('/api', router)
-// myApp.use(express.static('dist'))
-
 
 myApp.listen(port)
 console.log('API escuchando en el puerto ' + port)

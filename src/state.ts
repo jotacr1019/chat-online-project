@@ -114,15 +114,10 @@ const state = {
                 userId: currentState.userId
                 })
             });
-
             const data = await res.json();
-            console.log(data);
-
             currentState.roomId = data.id;
             currentState.longRoomId = data.longId;
             this.setState(currentState);
-            console.log(currentState);
-
             this.listenToDatabase();
         } catch (error) {
             console.error(error);
@@ -147,10 +142,7 @@ const state = {
         const timestamp = Date.now();
         const date = new Date(timestamp);
         const normalDate = date.toLocaleString();
-        // const finalHour = normalDate;
         const finalHour = formatTime(normalDate);
-        // const finalHour = formatTime("19/5/2023, 18:59:24");
-        console.log(finalHour);
         
         fetch(API_BASE_URL + "/messages", {
             method: "post",
@@ -171,20 +163,15 @@ export { state }
 
 
 function formatTime(date) {
-    console.log(date);
-    
     const timestampParts = date.split(" ");
     const datePart = timestampParts[0];
-    // const timePart = timestampParts[1].replace(/\s/g, "");
     const timePart = timestampParts[1];
     const amPm = timestampParts[2];
-    console.log(amPm);
+
     if(amPm && (amPm.includes("AM") || amPm.includes("PM"))){
         const [hours, minutes, seconds] = timePart.split(':');
-        
-        // const formattedTime = `${hours}:${minutes} AM`;
         const formattedTime = `${hours}:${minutes} ${amPm}`;
-        console.log('hace tratamiento de AM-PM');
+
         if(!date.includes(",")) {
             return `${datePart}, ${formattedTime}`;
         }
@@ -192,27 +179,18 @@ function formatTime(date) {
             return `${datePart} ${formattedTime}`;
         }
     }
-    // if(amPm && amPm.includes("PM")){
-    //     const [hours, minutes, seconds] = timePart.split(':');
-    //     console.log(hours);
-    //     const formattedTime = `${hours}:${minutes} PM`;
-    //     console.log(formattedTime);
-    //     console.log('hace tratamiento de PM');
-    //     return `${datePart} ${formattedTime}`;
-    // }
+
     else {
-        console.log('hace tratamiento total');
         const [hours, minutes, seconds] = timePart.split(':');
         const formattedHours = (parseInt(hours) % 12) || 12;
         const amPm = parseInt(hours) < 12 ? 'AM' : 'PM';
-    
         const formattedTime = `${formattedHours}:${minutes} ${amPm}`;
+        
         if(!date.includes(",")) {
             return `${datePart}, ${formattedTime}`;
         }
         else {
             return `${datePart} ${formattedTime}`;
         }
-        // return `${datePart} ${formattedTime}`;
     }
 }
